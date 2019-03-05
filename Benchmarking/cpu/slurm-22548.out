@@ -1,0 +1,61 @@
+This is a SAMPLE run script for running a shared-memory version of
+Intel(R) Distribution for LINPACK* Benchmark. Change it to reflect
+the correct number of CPUs/threads, problem input files, etc..
+*Other names and brands may be claimed as the property of others.
+./runme_xeon64: 35: [: -gt: unexpected operator
+Tue Mar 27 04:04:54 UTC 2018
+Sample data file lininput_xeon64.
+
+Current date/time: Tue Mar 27 04:04:56 2018
+
+CPU frequency:    2.628 GHz
+Number of CPUs: 2
+Number of cores: 2
+Number of threads: 2
+
+Parameters are set to:
+
+Number of tests: 15
+Number of equations to solve (problem size) : 1000  2000  5000  10000 15000 18000 20000 22000 25000 26000 27000 30000 35000 40000 45000
+Leading dimension of array                  : 1000  2000  5008  10000 15000 18008 20016 22008 25000 26000 27000 30000 35000 40000 45000
+Number of trials to run                     : 4     2     2     2     2     2     2     2     2     2     1     1     1     1     1    
+Data alignment value (in Kbytes)            : 4     4     4     4     4     4     4     4     4     4     4     1     1     1     1    
+
+Maximum memory requested that can be used=3202964416, at the size=20000
+
+=================== Timing linear equation system solver ===================
+
+Size   LDA    Align. Time(s)    GFlops   Residual     Residual(norm) Check
+1000   1000   4      0.027      24.9093  9.394430e-13 3.203742e-02   pass
+1000   1000   4      0.021      32.1288  9.394430e-13 3.203742e-02   pass
+1000   1000   4      0.013      49.8080  9.394430e-13 3.203742e-02   pass
+1000   1000   4      0.013      49.8080  9.394430e-13 3.203742e-02   pass
+2000   2000   4      0.095      55.9583  4.085732e-12 3.554086e-02   pass
+2000   2000   4      0.112      47.5915  4.085732e-12 3.554086e-02   pass
+5000   5008   4      1.314      63.4521  2.262585e-11 3.154992e-02   pass
+5000   5008   4      1.337      62.3457  2.262585e-11 3.154992e-02   pass
+10000  10000  4      10.953     60.8845  9.187981e-11 3.239775e-02   pass
+10000  10000  4      11.392     58.5403  9.187981e-11 3.239775e-02   pass
+15000  15000  4      37.953     59.2962  2.219450e-10 3.495671e-02   pass
+15000  15000  4      38.053     59.1400  2.219450e-10 3.495671e-02   pass
+18000  18008  4      68.375     56.8727  2.886628e-10 3.161212e-02   pass
+18000  18008  4      66.010     58.9104  2.886628e-10 3.161212e-02   pass
+20000  20016  4      88.429     60.3211  3.669736e-10 3.248520e-02   pass
+20000  20016  4      88.450     60.3066  3.669736e-10 3.248520e-02   pass
+
+Performance Summary (GFlops)
+
+Size   LDA    Align.  Average  Maximal
+1000   1000   4       39.1636  49.8080 
+2000   2000   4       51.7749  55.9583 
+5000   5008   4       62.8989  63.4521 
+10000  10000  4       59.7124  60.8845 
+15000  15000  4       59.2181  59.2962 
+18000  18008  4       57.8915  58.9104 
+20000  20016  4       60.3138  60.3211 
+
+Residual checks PASSED
+
+End of tests
+
+Done: Tue Mar 27 04:12:54 UTC 2018

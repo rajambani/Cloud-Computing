@@ -1,0 +1,5 @@
+[TCP, 32000, 8]2
+Threads: 8
+Time taken: 77.699sec Throughput: 10543.250234880757MbPS
+Latency: 7.236283272504807E-7 ms
+/exports/home/rambani/cs553-pa1/network

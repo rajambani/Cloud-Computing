@@ -1,0 +1,98 @@
+Running benchmarks with at least 4 threads.
+Running benchmarks with up to 4 threads.
+Running benchmarks with array size at least 1048576.
+Running benchmarks with array size up to 1048576.
+Setting memory limit to 1073741824.
+Running only functions containing 'ScanWrite64PtrSimpleLoop'
+CPUID: mmx sse avx
+Detected 3951 MiB physical RAM and 2 CPUs. 
+
+Allocating 512 MiB for testing.
+Skipping ScanWrite64PtrSimpleLoop test with 1024 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 2048 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 3072 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 4096 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 6144 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 8192 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 12288 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 16384 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 20480 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 24576 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 28672 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 32768 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 40960 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 49152 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 65536 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 98304 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 131072 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 196608 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 262144 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 393216 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 524288 minimum array size due to -s 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 786432 minimum array size due to -s 1048576.
+Running nthreads=4 factor=1073741824 areasize=1048576 thrsize=262144 testsize=1048576 repeats=4096 testvol=4294967296 testaccess=536870912
+run time = 0.164269 -> rerunning test with repeat factor=9804729132
+Running nthreads=4 factor=9804729132 areasize=1048576 thrsize=262144 testsize=1048576 repeats=37403 testvol=39219888128 testaccess=4902486016
+run time = 1.0866 -> next test with repeat factor=13535267425
+RESULT	datetime=2018-03-28 01:47:12	host=redcompute-11	version=0.6.2	funcname=ScanWrite64PtrSimpleLoop	nthreads=4	areasize=1048576	threadsize=262144	testsize=1048576	repeats=37403	testvol=39219888128	testaccess=4902486016	time=1.0866026939766015857	bandwidth=36094046467.40599823	rate=2.2164320110864373968e-10
+Skipping ScanWrite64PtrSimpleLoop test with 1310720 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 1572864 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 1835008 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 2097152 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 2359296 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 2621440 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 2883584 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 3145728 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 4194304 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 5242880 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 6291456 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 7340032 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 8388608 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 9437184 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 10485760 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 12582912 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 14680064 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 16777216 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 20971520 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 25165824 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 29360128 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 33554432 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 41943040 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 50331648 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 58720256 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 67108864 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 134217728 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 268435456 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 536870912 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 1073741824 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 2147483648 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 4294967296 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 8589934592 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 17179869184 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 34359738368 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 68719476736 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 137438953472 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 274877906944 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 549755813888 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrSimpleLoop test with 1099511627776 maximum array size due to -S 1048576.
+Skipping ScanWrite64PtrUnrollLoop tests
+Skipping ScanRead64PtrSimpleLoop tests
+Skipping ScanRead64PtrUnrollLoop tests
+Skipping ScanWrite64IndexSimpleLoop tests
+Skipping ScanWrite64IndexUnrollLoop tests
+Skipping ScanRead64IndexSimpleLoop tests
+Skipping ScanRead64IndexUnrollLoop tests
+Skipping ScanWrite128PtrSimpleLoop tests
+Skipping ScanWrite128PtrUnrollLoop tests
+Skipping ScanRead128PtrSimpleLoop tests
+Skipping ScanRead128PtrUnrollLoop tests
+Skipping ScanWrite256PtrSimpleLoop tests
+Skipping ScanWrite256PtrUnrollLoop tests
+Skipping ScanRead256PtrSimpleLoop tests
+Skipping ScanRead256PtrUnrollLoop tests
+Skipping ScanWrite32PtrSimpleLoop tests
+Skipping ScanWrite32PtrUnrollLoop tests
+Skipping ScanRead32PtrSimpleLoop tests
+Skipping ScanRead32PtrUnrollLoop tests
+Skipping PermRead64SimpleLoop tests
+Skipping PermRead64UnrollLoop tests

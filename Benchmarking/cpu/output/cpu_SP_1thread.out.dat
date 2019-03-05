@@ -1,0 +1,14 @@
+Size		Concurrency	type		MyCPUBenchValue		TheoreticalValue		Efficiency
+
+HP		2		HP		4.651163GigaOps		294.400000GigaOps		1.579879 %
+QP		4		QP		4.608295GigaOps		588.800000GigaOps		0.782659 %
+HP		4		HP		4.405286GigaOps		294.400000GigaOps		1.496361 %
+QP		2		QP		4.310345GigaOps		588.800000GigaOps		0.732056 %
+SP		4		SP		3.154574GigaOps		147.200000GigaOps		2.143053 %
+SP		2		SP		3.021148GigaOps		147.200000GigaOps		2.052410 %
+QP		1		QP		2.183406GigaOps		588.800000GigaOps		0.370823 %
+HP		1		HP		2.159827GigaOps		294.400000GigaOps		0.733637 %
+DP		1		DP		1.610306GigaOps		73.600000GigaOps		2.187916 %
+SP		1		SP		1.547988GigaOps		147.200000GigaOps		1.051622 %
+DP		4		DP		3.021148GigaOps		73.600000GigaOps		4.104821 %
+DP		2		DP		2.923977GigaOps		73.600000GigaOps		3.972794 %

@@ -1,0 +1,2 @@
+[UDP, 1000, 2]2
+slurmstepd: error: *** JOB 25129 ON redcompute-1 CANCELLED AT 2018-03-28T06:29:48 DUE TO TIME LIMIT ***

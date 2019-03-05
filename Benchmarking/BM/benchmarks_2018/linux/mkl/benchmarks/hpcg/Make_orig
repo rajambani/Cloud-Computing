@@ -1,0 +1,91 @@
+#===============================================================================
+# Copyright 2005-2017 Intel Corporation All Rights Reserved.
+#
+# The source code,  information  and material  ("Material") contained  herein is
+# owned by Intel Corporation or its  suppliers or licensors,  and  title to such
+# Material remains with Intel  Corporation or its  suppliers or  licensors.  The
+# Material  contains  proprietary  information  of  Intel or  its suppliers  and
+# licensors.  The Material is protected by  worldwide copyright  laws and treaty
+# provisions.  No part  of  the  Material   may  be  used,  copied,  reproduced,
+# modified, published,  uploaded, posted, transmitted,  distributed or disclosed
+# in any way without Intel's prior express written permission.  No license under
+# any patent,  copyright or other  intellectual property rights  in the Material
+# is granted to  or  conferred  upon  you,  either   expressly,  by implication,
+# inducement,  estoppel  or  otherwise.  Any  license   under such  intellectual
+# property rights must be express and approved by Intel in writing.
+#
+# Unless otherwise agreed by Intel in writing,  you may not remove or alter this
+# notice or  any  other  notice   embedded  in  Materials  by  Intel  or Intel's
+# suppliers or licensors in any way.
+#===============================================================================
+
+arch = UNKNOWN
+setup_file = setup/Make.$(arch)
+
+include $(setup_file)
+
+HPCG_DEPS = src/CG.o \
+	    src/CG_ref.o \
+	    src/ComputeResidual.o \
+	    src/ExchangeHalo.o \
+	    src/GenerateGeometry.o \
+	    src/GenerateProblem.o \
+	    src/ReadHpcgDat.o \
+	    src/ReportResults.o \
+	    src/TestSymmetry.o \
+	    src/TestNorms.o \
+	    src/WriteProblem.o \
+	    src/YAML_Doc.o \
+	    src/YAML_Element.o \
+	    src/ComputeDotProduct.o \
+	    src/ComputeDotProduct_ref.o \
+	    src/mytimer.o \
+	    src/ComputeSPMV_ref.o \
+	    src/ComputeSYMGS_ref.o \
+	    src/ComputeWAXPBY.o \
+	    src/ComputeWAXPBY_ref.o \
+	    src/ComputeMG_ref.o \
+	    src/ComputeProlongation_ref.o \
+	    src/ComputeRestriction_ref.o \
+	    src/GenerateCoarseProblem.o \
+	    src/ComputeOptimalShapeXYZ.o \
+	    src/SparseMatrix.o \
+	    src/CheckAspectRatio.o \
+	    src/CheckProblem.o \
+	    src/MixedBaseCounter.o \
+	    src/init.o \
+	    src/hpcg.o \
+	    src/Vector.o \
+	    src/AllReduce.o \
+	    src/finalize.o
+
+all: bin/xhpcg$(xhpcg_suff)
+
+LINK_ARGS = $(HPCG_DEPS)
+
+ifeq "BUILDING OFFLOAD" "$(if $(filter -DHPCG_OFFLOAD,$(HPCG_OPTS)),BUILDING OFFLOAD)"
+bin/xhpcg$(xhpcg_suff): src/offload_main.o src/mpi_wrappers.o $(HPCG_DEPS)
+	$(LINKER) $(LINKFLAGS) src/offload_main.o src/mpi_wrappers.o -qoffload-option,mic,compiler,"-Lbin/lib/mic -Wl,--start-group -lihpcg_offload $(HPCG_DEPS) -Wl,--end-group" -o $@
+else
+bin/xhpcg$(xhpcg_suff): src/main.o $(if $(filter -DHPCG_NO_MPI,$(HPCG_DEFS)),,src/mpi_wrappers.o) $(HPCG_DEPS)
+	$(LINKER) -Wl,--start-group $(LINKFLAGS) $(if $(filter y%,$(HPCG_STATIC_IMPI)),-static-intel -static-libgcc -static-libstdc++ -static_mpi) $^ $(HPCG_LIBS) -Wl,--end-group -o $@
+endif
+
+src/main.o: HPCG_SRC_PATH/src/main.cpp
+	$(CXX) -c $(CXXFLAGS) -IHPCG_SRC_PATH/src $< -o $@
+
+src/offload_main.o: HPCG_SRC_PATH/src/offload_main.cpp
+	$(CXXMPI) -c $(CXXMPIFLAGS) -IHPCG_SRC_PATH/src $< -o $@
+
+src/mpi_wrappers.o: HPCG_SRC_PATH/src/mpi_wrappers.cpp
+	$(if $(CXXMPI),$(CXXMPI),$(CXX)) -c $(if $(CXXMPIFLAGS),$(CXXMPIFLAGS),$(CXXFLAGS)) -IHPCG_SRC_PATH/src $< -o $@
+
+src/%.o: HPCG_SRC_PATH/src/%.cpp
+	$(CXX) -c $(CXXFLAGS) -IHPCG_SRC_PATH/src $< -o $@
+
+clean:
+	rm -f src/*.o src/*.o bin/xhpcg
+
+.PHONY: all clean
+
+

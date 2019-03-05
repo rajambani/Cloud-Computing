@@ -1,0 +1,10 @@
+Input file name: memory-RWR-10000000-1thread.dat
+1 10000000 
+Thread id: 1658201856
+1		10000000	RWR	24.219831	3.845289	2.421983
+
+current working directory is: /exports/home/rambani/cs553-pa1/memory
+
+current working directory is: /exports/home/rambani/cs553-pa1/memory/output
+
+ memory-RWR-10000000-1thread.out.dat

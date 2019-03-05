@@ -1,0 +1,3 @@
+[TCP, 32000, 8]1
+Server Started...
+slurmstepd: error: *** JOB 25111 ON redcompute-1 CANCELLED AT 2018-03-28T05:59:40 DUE TO TIME LIMIT ***

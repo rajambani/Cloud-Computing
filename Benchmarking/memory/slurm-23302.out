@@ -1,0 +1,1 @@
+/var/spool/slurmd/job23302/slurm_script: line 5:  3952 Segmentation fault      (core dumped) ./MyRAMBench.exe memory-RWR-10000000-2thread.dat memory-RWR-10000000-2thread.out.dat

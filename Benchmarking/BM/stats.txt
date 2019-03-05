@@ -1,0 +1,1 @@
+RESULT	datetime=2018-03-28 03:09:08	host=bluecompute-9	version=0.6.2	funcname=PermRead64SimpleLoop	nthreads=4	areasize=1024	threadsize=256	testsize=1024	repeats=28489481	testvol=29173228544	testaccess=3646653568	time=1.2879002910340204835	bandwidth=22651775721.377933502	rate=3.531731948259529754e-10

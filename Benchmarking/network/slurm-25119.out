@@ -1,0 +1,19 @@
+[TCP, 32000, 8]1
+Server Started...
+Connection Established
+Connection Established
+Connection Established
+Connection Established
+Connection Established
+Connection Established
+Connection Established
+Connection Established
+End of data receiving
+End of data receiving
+End of data receiving
+End of data receiving
+End of data receiving
+End of data receiving
+End of data receiving
+End of data receiving
+slurmstepd: error: *** JOB 25119 ON redcompute-9 CANCELLED AT 2018-03-28T06:11:28 ***

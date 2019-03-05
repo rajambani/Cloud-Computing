@@ -1,0 +1,91 @@
+#!/bin/bash
+#===============================================================================
+# Copyright 2001-2017 Intel Corporation All Rights Reserved.
+#
+# The source code,  information  and material  ("Material") contained  herein is
+# owned by Intel Corporation or its  suppliers or licensors,  and  title to such
+# Material remains with Intel  Corporation or its  suppliers or  licensors.  The
+# Material  contains  proprietary  information  of  Intel or  its suppliers  and
+# licensors.  The Material is protected by  worldwide copyright  laws and treaty
+# provisions.  No part  of  the  Material   may  be  used,  copied,  reproduced,
+# modified, published,  uploaded, posted, transmitted,  distributed or disclosed
+# in any way without Intel's prior express written permission.  No license under
+# any patent,  copyright or other  intellectual property rights  in the Material
+# is granted to  or  conferred  upon  you,  either   expressly,  by implication,
+# inducement,  estoppel  or  otherwise.  Any  license   under such  intellectual
+# property rights must be express and approved by Intel in writing.
+#
+# Unless otherwise agreed by Intel in writing,  you may not remove or alter this
+# notice or  any  other  notice   embedded  in  Materials  by  Intel  or Intel's
+# suppliers or licensors in any way.
+#===============================================================================
+
+#
+echo "This is a SAMPLE run script.  Change it to reflect the correct number"
+echo "of CPUs/threads, number of nodes, MPI processes per node, etc.."
+
+# Set total number of MPI processes for the HPL (should be equal to PxQ).
+export MPI_PROC_NUM=2
+
+# Set the MPI per node and number of MICs attached to each node.
+# MPI_PER_NODE should be equal to 1 or number of sockets in the system. Otherwise,
+# the HPL performance will be low. 
+# MPI_PER_NODE is same as -perhost or -ppn paramaters in mpirun/mpiexec
+export MPI_PER_NODE=2
+
+# Set number of MICs that HPL will access per node
+export NUMMIC=2
+
+#
+# You can find description of all Intel MPI parameters in the
+# Intel MPI Reference Manual.
+# See <intel mpi installdir>/doc/Reference_manual.pdf
+export I_MPI_DAPL_DIRECT_COPY_THRESHOLD=655360
+
+#         "export I_MPI_PIN_CELL=core"
+#         You can use this variable (beginning Intel MPI 4.0.1 for cases if HT is enabled. 
+#         The variable forces to pin MPI processes and threads to real cores, 
+#         so logical processors will not be involved.
+#         It can be used together with the variable below, when Hydra Process Manager:
+#         "export I_MPI_PIN_DOMAIN=auto" This allows uniform distribution of
+#	      the processes and thread domains
+
+# export I_MPI_EAGER_THRESHOLD=128000
+#          This setting may give 1-2% of performance increase over the
+#          default value of 262000 for large problems and high number of cores
+
+export OUT=xhpl_intel64_dynamic_outputs.txt
+export HPL_EXE=xhpl_intel64_dynamic
+
+echo -n "This run was done on: "
+date
+
+# Capture some meaningful data for future reference:
+echo -n "This run was done on: " >> $OUT
+date >> $OUT
+echo "HPL.dat: " >> $OUT
+cat HPL.dat >> $OUT
+echo "Binary name: " >> $OUT
+ls -l xhpl_intel64_dynamic >> $OUT
+echo "This script: " >> $OUT
+cat runme_intel64_dynamic >> $OUT
+echo "Environment variables: " >> $OUT
+env >> $OUT
+echo "Actual run: " >> $OUT
+
+# Environment variables can also be also be set on the Intel MPI command line
+# using the -genv option (to appear before the -np 1):
+
+# mpirun -np ${MPI_PROC_NUM} ./runme_intel64_prv "$@" | tee -a $OUT
+
+# In case of multiple nodes involved, please set the number of MPI processes
+# per node (ppn=1,2 typically) through the -perhost option (because the
+# default is all cores):
+
+mpirun -perhost ${MPI_PER_NODE} -np ${MPI_PROC_NUM} ./runme_intel64_prv "$@" | tee -a $OUT
+
+echo -n "Done: " >> $OUT
+date >> $OUT
+
+echo -n "Done: "
+date

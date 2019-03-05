@@ -1,0 +1,5 @@
+[UDP, 1000, 8]2
+Threads: 8
+Time taken: 5697.751 sec Throughput: 133.90185936960037 MbPS
+Latency: 5.697751E-5 ms
+/exports/home/rambani/cs553-pa1/network

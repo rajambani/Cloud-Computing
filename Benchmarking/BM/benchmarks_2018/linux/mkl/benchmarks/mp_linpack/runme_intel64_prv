@@ -1,0 +1,193 @@
+#!/bin/bash
+#===============================================================================
+# Copyright 2001-2017 Intel Corporation All Rights Reserved.
+#
+# The source code,  information  and material  ("Material") contained  herein is
+# owned by Intel Corporation or its  suppliers or licensors,  and  title to such
+# Material remains with Intel  Corporation or its  suppliers or  licensors.  The
+# Material  contains  proprietary  information  of  Intel or  its suppliers  and
+# licensors.  The Material is protected by  worldwide copyright  laws and treaty
+# provisions.  No part  of  the  Material   may  be  used,  copied,  reproduced,
+# modified, published,  uploaded, posted, transmitted,  distributed or disclosed
+# in any way without Intel's prior express written permission.  No license under
+# any patent,  copyright or other  intellectual property rights  in the Material
+# is granted to  or  conferred  upon  you,  either   expressly,  by implication,
+# inducement,  estoppel  or  otherwise.  Any  license   under such  intellectual
+# property rights must be express and approved by Intel in writing.
+#
+# Unless otherwise agreed by Intel in writing,  you may not remove or alter this
+# notice or  any  other  notice   embedded  in  Materials  by  Intel  or Intel's
+# suppliers or licensors in any way.
+#===============================================================================
+
+# For Mvapich
+if [ -n "${MPIRUN_RANK}" ]
+then PMI_RANK=${MPIRUN_RANK}
+fi
+
+# For OpenMPI
+if [ -n "${OMPI_COMM_WORLD_RANK}" ]
+then PMI_RANK=${OMPI_COMM_WORLD_RANK}
+fi
+
+MPI_RANK_FOR_NODE=$((PMI_RANK % MPI_PER_NODE))
+
+ERROR_INVALID="This script does not support this usage model. Please change number of MPI processes per node (MPI_PER_NODE variable inside runme_intel64_static or runme_intel64_dynamic)!"
+ERROR_1MIC="For 1 Intel(R) Xeon Phi(TM) co-processor, use 1 or 2 MPI processes per node. Current value = ${MPI_PER_NODE}."
+ERROR_2MIC="For 2 Intel(R) Xeon Phi(TM) co-processors, use 1, 2 or 4 MPI processes per node. Current value = ${MPI_PER_NODE}."
+ERROR_3MIC="For 3 Intel(R) Xeon Phi(TM) co-processors, use 1, 2 or 3 MPI processes per node. Current value = ${MPI_PER_NODE}."
+ERROR_4MIC="For 4 Intel(R) Xeon Phi(TM) co-processors, use 1, 2 or 4 MPI processes per node. Current value = ${MPI_PER_NODE}."
+
+#  Here are some example HPL related variables
+export HPL_LARGEPAGE=0
+export HPL_NUMSWAPS=0
+export HPL_HOST_NODE=${MPI_RANK_FOR_NODE}
+
+case ${MPI_PER_NODE} in
+	# 1 MPI per node
+	1)
+	export HPL_PNUMMICS=${NUMMIC}
+	;;
+	# 2 MPI per node
+	2)
+	case ${MPI_RANK_FOR_NODE} in
+		# 1/2 MPI Rank
+		0)
+		case ${NUMMIC} in
+			# 0 MIC - 1/2 MPI Rank 
+			0)
+			export HPL_PNUMMICS=0
+			;;
+			# 1 MIC - 1/2 MPI Rank 
+			1)
+			export HPL_MIC_DEVICE=0
+			export HPL_MIC_SHAREMODE=1
+			;;
+			# 2 MIC - 1/2 MPI Rank 
+			2)
+			export HPL_MIC_DEVICE=0
+			;;
+			# 3 MIC - 1/2 MPI Rank 
+			3)
+			export HPL_MIC_DEVICE=0,2
+			export HPL_MIC_SHAREMODE=0,1
+			;;
+			# 4 MIC - 1/2 MPI Rank 
+			4)
+			export HPL_MIC_DEVICE=0,1
+			;;
+		esac
+		;;
+		# 2/2 MPI Rank 
+		1)
+		case ${NUMMIC} in
+			# 0 MIC - 2/2 MPI Rank 
+			0)
+			export HPL_PNUMMICS=0
+			;;
+			# 1 MIC - 2/2 MPI Rank 
+			1)
+			export HPL_MIC_DEVICE=0
+			export HPL_MIC_SHAREMODE=2
+			;;
+			# 2 MIC - 2/2 MPI Rank 
+			2)
+			export HPL_MIC_DEVICE=1
+			;;
+			# 3 MIC - 2/2 MPI Rank 
+			3)
+			export HPL_MIC_DEVICE=1,2
+			export HPL_MIC_SHAREMODE=0,2
+			;;
+			# 4 MIC - 2/2 MPI Rank 
+			4)
+			export HPL_MIC_DEVICE=2,3
+			;;
+		esac
+		;;
+	esac
+	;;
+	# 3 MPI per node 
+	3)
+	case ${NUMMIC} in
+		# 0 MIC 
+		0)
+		;;
+		# 1 MIC 
+		1)
+		echo ${ERROR_INVALID}
+        echo ${ERROR_1MIC}
+		exit
+		;;
+		# 2 MIC 
+		2)
+		echo ${ERROR_INVALID}
+        echo ${ERROR_2MIC}
+		exit
+		;;
+		# 3 MIC
+		3)
+		export HPL_MIC_DEVICE=${MPI_RANK_FOR_NODE}
+		;;
+		# 4 MIC
+		4)
+		echo ${ERROR_INVALID}
+        echo ${ERROR_4MIC}
+		exit
+		;;
+	esac
+	;;
+	# 4 MPI per node 
+	4)
+	case ${NUMMIC} in
+		# 0 MIC
+		0)
+		;;
+		# 1 MIC
+		1)
+		echo ${ERROR_INVALID}
+        echo ${ERROR_1MIC}
+		exit
+		;;
+		# 2 MIC
+		2)
+		case ${MPI_RANK_FOR_NODE} in
+			# 1/4 MPI
+			0)
+			export HPL_MIC_DEVICE=0
+			export HPL_MIC_SHAREMODE=1
+			;;
+			# 2/4 MPI
+			1)
+			export HPL_MIC_DEVICE=0
+			export HPL_MIC_SHAREMODE=2
+			;;
+			# 3/4 MPI
+			2)
+			export HPL_MIC_DEVICE=1
+			export HPL_MIC_SHAREMODE=1
+			;;
+			# 4/4 MPI
+			3)
+			export HPL_MIC_DEVICE=1
+			export HPL_MIC_SHAREMODE=2
+			;;
+		esac
+		;;
+		# 3 MIC
+		3)
+		echo ${ERROR_INVALID}
+        echo ${ERROR_3MIC}
+		exit
+		;;
+		# 4 MIC
+		4)
+		export HPL_MIC_DEVICE=${MPI_RANK_FOR_NODE}
+		;;
+	esac
+	;;
+esac
+
+echo MPI_RANK_FOR_NODE=${MPI_RANK_FOR_NODE} NODE=${HPL_HOST_NODE}, CORE=${HPL_HOST_CORE}, MIC=${HPL_MIC_DEVICE}, SHARE=${HPL_MIC_SHAREMODE}
+
+./${HPL_EXE} "$@"

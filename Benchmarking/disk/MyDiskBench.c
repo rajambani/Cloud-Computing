@@ -1,0 +1,691 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <pthread.h>
+#include <math.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+char *file = NULL, workLoad[5];
+char *outputFileName = NULL;
+long long memorySize = 10000000000; //10GB of data
+long long concurrency,BlockSize;
+double MyDiskBenchValue, TheoreticalValue = 1.0, Latency, TheoreticalLatency=0.5;
+//Workload Concurrency BlockSize MyRAMBenchValue TheoreticalValue MyRAMBenchEfficiency
+
+
+//Function Prototypes are defined here.
+//Functions for Read-Write random access
+void performRR(char line[10][10]);
+void * randomReadOperation(void *threadDetails);
+void * sequentialReadOperation(void *threadDetails);
+//For write operations
+void * randomWriteOperation(void *threadDetails);
+void * sequentialWriteOperation(void *threadDetails);
+
+
+//Function to write output to file.
+void writeToFile();
+void createFile1();
+void * createFileThread(void *temp);
+
+/*structure for maintaining current thread details*/
+typedef struct Thread_Details 
+{
+	long long startOffset,endOffset;
+	int threadsize;
+	long long blocksize;
+} Thread_Details;
+
+
+//FILL ME IN
+int main(int argc, char *argv[]) 
+{
+
+    	//Read input file
+	FILE *fptr;
+	file = argv[1];
+	outputFileName = argv[2];
+	char ch;
+	char line[10][10];// = (char *)malloc(sizeof(char) * 10);
+	printf("Input file name: %s", argv[1]);
+	
+	/*  opening the file for reading */
+	fptr = fopen(file, "r");
+	if (fptr == NULL)
+	{
+		printf("Cannot open file \n");
+		exit(0);
+	}
+	ch = fgetc(fptr);
+	int lineCount=0, wordCount;
+	char *word;// = (char *)malloc(sizeof(char) * 10);
+	while (ch != EOF)
+	{
+		word = (char *)malloc(sizeof(char) * 10);
+		wordCount=0;
+		while(ch != EOF && ch != '\n')
+		{
+			word[wordCount] = ch;
+        		wordCount++;
+			ch = fgetc(fptr);
+			//strcat(word,ch);
+		}
+		strcpy(line[lineCount],word);
+		//printf("\n%s %s %d %d", line[lineCount], word, lineCount, wordCount);
+		//free(word);
+		lineCount++;
+		ch = fgetc(fptr);
+	}
+	fclose(fptr);
+	//printf("\n%s", line[2]);
+
+	//create tmp file
+	//createFile();
+
+	strcpy(workLoad,line[0]);
+
+	performRR(line);
+	writeToFile();
+	
+	return 0;
+}
+
+
+
+//Function for calculating Read-Write random access.
+void performRR(char line[10][10])
+{
+	//printf("\n%s", line[2]);
+	int numOfThreads = atoi(line[2]);
+	concurrency = numOfThreads;
+	long long blockSize = atoi(line[1]) * 1000; //1KB = 1000bytes
+	//parameter to be written in file.
+	BlockSize = blockSize;
+	long long loopSize = memorySize/blockSize;
+	
+	//Creating thread array.
+	pthread_t threads[numOfThreads];
+	//thread structure variable used to manintain thread related information like offset and other details.
+	Thread_Details *threadDetails = (Thread_Details*) malloc(numOfThreads * sizeof (Thread_Details));
+
+	//timer variables.
+	struct timeval startTime, endTime;
+	double totalTime, throughput, latency;
+
+	printf("\n%d %d ", numOfThreads, BlockSize);
+	int i;
+	//int   tid;
+
+	//Perform RR
+	//Start system timer.
+	if(strcmp(line[0], "RR") == 0)
+	{
+		//set file params
+		TheoreticalValue = 372 * numOfThreads;
+		if(blockSize == 1000)
+		{
+			TheoreticalValue = 0.5;	
+		}
+
+		//create file 
+		createFile1();
+		//End of create file.
+
+		//Start timer.
+		gettimeofday(&startTime, NULL);
+		for(i=0; i<numOfThreads; i++)
+		{
+			//pthread_id_np_t   tid;
+			pthread_t tid = pthread_self();
+			printf("\nThread id: %d", tid);
+			//current thread starting offset address.
+			threadDetails[i].startOffset = i * (loopSize / numOfThreads);
+			//current thread ending offset address.
+			threadDetails[i].endOffset = (i+1) * (loopSize / numOfThreads) - 1;
+			threadDetails[i].blocksize = blockSize;
+			threadDetails[i].threadsize = numOfThreads;
+			//Creating threads.
+			pthread_create(&threads[i], NULL, randomReadOperation, (void*)&threadDetails[i]);
+		}
+		for(i=0; i<numOfThreads; i++)
+		{
+			//Thread join ensures that all the thread execution has completed and can move to next processing.
+			pthread_join(threads[i], NULL);
+		}
+		//End System timer.
+		gettimeofday(&endTime, NULL);
+	}
+	//End of RR
+
+	 //Perform RS
+	//Start system timer.
+	else if(strcmp(line[0], "RS") == 0)
+	{
+		//set file params
+		TheoreticalValue = 540 * numOfThreads;
+		if(blockSize == 1000)
+		{
+			TheoreticalValue = 0.5;	
+		}
+
+		//create file 
+		createFile1();
+		//End of create file.
+
+		gettimeofday(&startTime, NULL);
+		for(i=0; i<numOfThreads; i++)
+		{
+			//pthread_id_np_t   tid;
+			pthread_t tid = pthread_self();
+			printf("\nThread id: %ld", tid);
+			//current thread starting offset address.
+			threadDetails[i].startOffset = i * (loopSize / numOfThreads);
+			//current thread ending offset address.
+			threadDetails[i].endOffset = (i+1) * (loopSize / numOfThreads) - 1;
+			threadDetails[i].blocksize = blockSize;
+			threadDetails[i].threadsize = numOfThreads;
+			//Creating threads.
+			pthread_create(&threads[i], NULL, sequentialReadOperation, (void*)&threadDetails[i]);
+		}
+		for(i=0; i<numOfThreads; i++)
+		{
+			//Thread join ensures that all the thread execution has completed and can move to next processing.
+			pthread_join(threads[i], NULL);
+		}
+		//End System timer.
+		gettimeofday(&endTime, NULL);
+	}
+	//End of RS
+
+	//Perform WR
+	//Start system timer.
+	else if(strcmp(line[0], "WR") == 0)
+	{
+
+		//set file params
+		TheoreticalValue = 172 * numOfThreads;
+		if(blockSize == 1000)
+		{
+			TheoreticalValue = 0.5;	
+		}
+
+		chdir("/tmp");
+		int ret = remove("raj_tmp.txt");
+
+		   if(ret == 0) {
+		      printf("\nFile deleted successfully");
+		   } else {
+		      printf("\nError: unable to delete the file as the file does not exist");
+		   }
+
+		gettimeofday(&startTime, NULL);
+
+		for(i=0; i<numOfThreads; i++)
+		{
+			//pthread_id_np_t   tid;
+			pthread_t tid = pthread_self();
+			printf("\nThread id: %d", tid);
+			//current thread starting offset address.
+			threadDetails[i].startOffset = i * (loopSize / numOfThreads);
+			//current thread ending offset address.
+			threadDetails[i].endOffset = (i+1) * (loopSize / numOfThreads) - 1;
+			threadDetails[i].blocksize = blockSize;
+			threadDetails[i].threadsize = numOfThreads;
+			//Creating threads.
+			pthread_create(&threads[i], NULL, randomWriteOperation, (void*)&threadDetails[i]);
+		}
+		for(i=0; i<numOfThreads; i++)
+		{
+			//Thread join ensures that all the thread execution has completed and can move to next processing.
+			pthread_join(threads[i], NULL);
+		}
+		//End System timer.
+		gettimeofday(&endTime, NULL);
+	}
+	//End of WR
+
+	//Perform WS
+	//Start system timer.
+	else if(strcmp(line[0], "WS") == 0)
+	{
+
+		//set file params
+		TheoreticalValue = 410 * numOfThreads;
+		if(blockSize == 1000)
+		{
+			TheoreticalValue = 0.5;	
+		}
+
+		chdir("/tmp");
+		int ret = remove("raj_tmp.txt");
+
+		   if(ret == 0) {
+		      printf("File deleted successfully");
+		   } else {
+		      printf("Error: unable to delete the file as the file does not exist");
+		   }
+
+		gettimeofday(&startTime, NULL);
+		for(i=0; i<numOfThreads; i++)
+		{
+			//pthread_id_np_t   tid;
+			pthread_t tid = pthread_self();
+			printf("\nThread id: %d", tid);
+			//current thread starting offset address.
+			threadDetails[i].startOffset = i * (loopSize / numOfThreads);
+			//current thread ending offset address.
+			threadDetails[i].endOffset = (i+1) * (loopSize / numOfThreads) - 1;
+			threadDetails[i].blocksize = blockSize;
+			threadDetails[i].threadsize = numOfThreads;
+			//Creating threads.
+			pthread_create(&threads[i], NULL, sequentialWriteOperation, (void*)&threadDetails[i]);
+		}
+		for(i=0; i<numOfThreads; i++)
+		{
+			//Thread join ensures that all the thread execution has completed and can move to next processing.
+			pthread_join(threads[i], NULL);
+		}
+		//End System timer.
+		gettimeofday(&endTime, NULL);
+	}
+	//End of WS
+
+	//Total time in seconds.
+	totalTime = (double) (endTime.tv_sec - startTime.tv_sec) + (double) (endTime.tv_usec - startTime.tv_usec) / 1000000 ;
+	printf("\nTime: %ld %d %ld %ld", startTime.tv_sec, endTime.tv_sec, startTime.tv_usec, endTime.tv_usec);
+	//Calculate throughput in MBPS
+	//memorySize *= 100;
+	throughput = (double) ((double)(memorySize/1000000)) / ((double)totalTime ); // *10GB 1048576Mbps 1073741824Gbps
+	//Calculate Latency in milliseconds
+	latency = (double) ((totalTime)/((memorySize)/blockSize))*1000; //*1000 milliseconds
+	MyDiskBenchValue = throughput;
+
+
+	// For 1-Kbyte latency
+	if(blockSize == 1000)
+	{
+		//Total time in seconds.
+		totalTime = (double) (endTime.tv_sec - startTime.tv_sec) + (double) (endTime.tv_usec - startTime.tv_usec) / 1000000 ;
+		printf("\nTime: %ld %d %ld %ld", startTime.tv_sec, endTime.tv_sec, startTime.tv_usec, endTime.tv_usec);
+		//Calculate throughput in MBPS
+		//memorySize *= 100;
+		throughput = (double) ((double)(memorySize/1000000/10)) / ((double)totalTime ); // *10GB 1048576Mbps 1073741824Gbps
+		//Calculate Latency in milliseconds
+		latency = (double) ((totalTime)/((memorySize/10)/blockSize))*1000; //*1000 milliseconds
+		MyDiskBenchValue = throughput;
+		Latency = latency;
+	}
+	printf("\n%i\t\t%d\t%s\t%fsec\t%fMBPS\t%fms\n", numOfThreads,blockSize, "RWR", totalTime,throughput,latency);
+	free(threadDetails);	
+}
+
+
+void createFile1()
+{
+		pthread_t tid[50];
+		int i;
+		chdir("/tmp"); //For Cluster only.
+		//remove("raj_tmp.txt");
+		FILE *tmpFile = fopen("raj_tmp.txt","w");
+		fclose(tmpFile);
+		for(i=0; i<10; i++)
+		{
+			pthread_create(&tid[i], NULL ,  createFileThread , NULL);
+		}
+		for(i=0; i<10; i++)
+		{
+			pthread_join(tid[i], NULL);
+		}	
+}
+//createFileThread
+void *createFileThread(void *temp)
+{
+	//Open file for writing data
+	//printf("\nHere createFileThread");
+	//chdir("/tmp"); //For Cluster only.
+	//createFile();
+	FILE *tmpFile = fopen("raj_tmp.txt","r+");
+	//printf("Here 1");
+	if(tmpFile == NULL)
+	{
+		printf("\n Unable to Open file in Write mode for WR and hence creating new file");
+		tmpFile = fopen("raj_tmp.txt","w");	
+	}
+	long long i=0;
+	char *buff = (char *) malloc(sizeof(char) * 100000000);
+	memset(buff,'.', 100000000);
+	//printf("\nHere createFileThread 1");
+	for(i=0; i<100/1;i++)
+	{
+		//fseek(tmpFile,i*1000000,SEEK_SET);
+		//fwrite(buff,1,blockSize, tmpFile);
+		fwrite(buff,1,100000000, tmpFile);
+	}
+	free(buff);
+	fclose(tmpFile);
+}
+
+//Function for performing random read operations using single/multiple threads.
+void * randomReadOperation(void *threadDetails)
+{
+	Thread_Details *threadInfo = (Thread_Details *) threadDetails;
+	long long blockSize = threadInfo -> blocksize;
+	long long loopSize = memorySize/blockSize;
+	long long blocksPerThread = loopSize/(threadInfo->threadsize);
+	long long randomOffset,i;
+	srand((unsigned)time(NULL));
+	long long start, end, j;
+	
+	//Open file for reading data
+	chdir("/tmp"); //For Cluster only.
+	FILE *tmpFile = fopen("raj_tmp.txt","r");
+	if(tmpFile == NULL)
+		printf("\n Unable to Open file in read mode for RR");
+	
+	char *buff = (char*)malloc(sizeof(char) * blockSize);
+	start = threadInfo->startOffset;
+	end = threadInfo->endOffset;
+	printf("\n startOffset:%d, endOffset:%d ",start, end );
+
+	// For 1-byte latency
+	if(blockSize == 1000)
+	{	
+		//for(j=0; j<1000000; j++)
+		//{
+		printf("\nRR for 1KB");
+			for(i=start; i<=end/10; i++)
+			{
+				//Do random offset selection.
+				randomOffset = rand()%blocksPerThread + (start);
+				//Read and Write memory at some random offset.
+				//fseek(tmpFile,randomOffset*blockSize,SEEK_SET);
+				fseek(tmpFile,randomOffset*blockSize,SEEK_CUR);
+				fread(buff,blockSize,1,tmpFile);
+			}	
+		//}
+		printf("\n i:%d", i);
+		free(buff);
+		fclose(tmpFile);
+		return;
+	}
+	
+	/*Used to set the starting value(seed), so time(NULL) will make use of 
+	 *computer's internal clock to control the choice of the seed.
+	 */
+
+	printf("\noutside if");
+	for(i=start; i<=end; i++)
+	{
+		//Do random offset selection.
+		randomOffset = rand()%blocksPerThread + (start);
+		//Read and Write memory at some random offset.
+		//fseek(file,randomOffset*blockSize,SEEK_CUR);
+		fseek(tmpFile,randomOffset*blockSize,SEEK_SET);
+		//lseek(file,randomOffset*blockSize, SEEK_SET);
+		fread(buff,blockSize,1,tmpFile);
+	}
+
+	//fseek(file, 0L, SEEK_END);
+	//long int sz = ftell(file);
+	//printf("\nFile size:%ld, i:%ld ", sz, i);
+	free(buff);
+	fclose(tmpFile);
+}
+
+//Sequential Read Operation
+void * sequentialReadOperation(void *threadDetails)
+{
+	Thread_Details *threadInfo = (Thread_Details *) threadDetails;
+	long long blockSize = threadInfo -> blocksize;
+	long long loopSize = memorySize/blockSize;
+	long long blocksPerThread = loopSize/(threadInfo->threadsize);
+	long long randomOffset,i;
+	srand((unsigned)time(NULL));
+	long long start, end, j;
+	
+	//Open file for reading data
+	chdir("/tmp"); //For Cluster only.
+	FILE *tmpFile = fopen("raj_tmp.txt","r");
+	if(tmpFile == NULL)
+		printf("\n Unable to Open file in read mode for RR");
+	
+	start = threadInfo->startOffset;
+	end = threadInfo->endOffset;
+	printf("\n startOffset:%d, endOffset:%d ",start, end );
+
+	// For 1-byte latency
+	if(blockSize == 1000)
+	{	
+		//for(j=0; j<1000000; j++)
+		//{
+			for(i=start; i<=end/10; i++)
+			{
+				char *buff = (char*)malloc(sizeof(char) * blockSize);
+				//Read and Write memory at some random offset.
+				fseek(tmpFile,i*blockSize,SEEK_SET);
+				//lseek(file,randomOffset*blockSize, SEEK_SET);
+				fread(buff,blockSize,1,tmpFile);
+				free(buff);
+			}
+		//}
+		fclose(tmpFile);
+		return;
+	}
+	
+	/*Used to set the starting value(seed), so time(NULL) will make use of 
+	 *computer's internal clock to control the choice of the seed.
+	 */
+	for(i=start; i<=end; i++)
+	{
+		char *buff = (char*)malloc(sizeof(char) * blockSize);
+		//Read and Write memory at sequential offset.
+		//fseek(file,randomOffset*blockSize,SEEK_CUR);
+		fseek(tmpFile,i*blockSize,SEEK_SET);
+		//lseek(file,randomOffset*blockSize, SEEK_SET);
+		fread(buff,blockSize,1,tmpFile);
+		free(buff);
+	}
+	char cwd[256];
+	getcwd(cwd, sizeof(cwd));
+	printf("\ncurrent working directory is: %s\n", cwd);
+	//fseek(file, 0L, SEEK_END);
+	//long int sz = ftell(file);
+	printf("\nFile size:, i:%ld ", i);
+	fclose(tmpFile);
+}
+
+
+//Random Write Operation
+void * randomWriteOperation(void *threadDetails)
+{
+	Thread_Details *threadInfo = (Thread_Details *) threadDetails;
+	long long blockSize = threadInfo -> blocksize;
+	long long loopSize = memorySize/blockSize;
+	long long blocksPerThread = loopSize/(threadInfo->threadsize);
+	long int randomOffset;
+	srand((unsigned)time(NULL));
+	long long start, end, i,j;
+	
+	//Open file for writing data
+	chdir("/tmp"); //For Cluster only.
+	//createFile();
+	FILE *tmpFile = fopen("raj_tmp.txt","r+");
+	if(tmpFile == NULL)
+	{
+		printf("\n Unable to Open file in Write mode for WR and hence creating new file");
+		tmpFile = fopen("raj_tmp.txt","w");	
+	}
+	
+	char *buff = (char *) malloc(sizeof(char) * blockSize);
+	memset(buff,'.', blockSize);
+	start = threadInfo->startOffset;
+	end = threadInfo->endOffset;
+	printf("\n startOffset:%d, endOffset:%d ",start, end );
+
+	// For 1-byte latency
+	if(blockSize == 1000)
+	{	
+		//printf("Inside if");
+		//for(j=0; j<1000000; j++)
+		//{
+			for(i=start; i<=end/10; i++)
+			{
+				//Do random offset selection.
+				randomOffset = rand()%(blocksPerThread) + (start);
+				//Read and Write memory at some random offset.
+				fseek(tmpFile,randomOffset*blockSize,SEEK_SET);
+				//lseek(file,randomOffset,SEEK_SET);
+				//lseek(file,i*blockSize, SEEK_SET);
+				//buff = 'a';	
+				//fseek(file,i*blockSize,SEEK_CUR);	
+				//write(tmpFile,buff,blockSize);
+				fwrite(buff,1,blockSize, tmpFile);
+			}	
+		//}
+		printf(" %ld", i);
+		free(buff);
+		fclose(tmpFile);
+		return;
+	}
+	
+	/*Used to set the starting value(seed), so time(NULL) will make use of 
+	 *computer's internal clock to control the choice of the seed.
+	 */
+	printf("%ld %ld", memorySize, blockSize);
+	//for(i=0; i<memorySize/blockSize; i++)
+	for(i=start; i<=end; i++)
+	{
+		//Do random offset selection.
+		randomOffset = rand()%blocksPerThread + (start);
+		//Read and Write memory at some random offset.
+		fseek(tmpFile,randomOffset*blockSize,SEEK_SET);
+		//lseek(file,randomOffset,SEEK_SET);
+		//lseek(file,i*blockSize, SEEK_SET);
+		//buff = 'a';	
+		//fseek(file,i*blockSize,SEEK_CUR);	
+		
+		//write(tmpFile,buff,blockSize);
+		fwrite(buff,1,blockSize, tmpFile);
+		//printf(" %ld", i);
+	}
+	//printf("%s", buff);
+	//fseek(file, 0L, SEEK_END);
+	//long int sz = ftell(file);
+	//printf("\nFile size:, i:%ld ", i);
+	free(buff);
+	fclose(tmpFile);
+}
+
+//Sequential Write Operation
+void * sequentialWriteOperation(void *threadDetails)
+{
+	Thread_Details *threadInfo = (Thread_Details *) threadDetails;
+	long long blockSize = threadInfo -> blocksize;
+	long long loopSize = memorySize/blockSize;
+	long long blocksPerThread = loopSize/(threadInfo->threadsize);
+	long int randomOffset;
+	srand((unsigned)time(NULL));
+	long long start, end, i,j;
+	
+	//Open file for reading data
+	chdir("/tmp"); //For Cluster only.
+	//createFile();
+	FILE *tmpFile = fopen("raj_tmp.txt","r+");
+	if(tmpFile == NULL)
+	{
+		printf("\n Unable to Open file in Write mode for WS and hence creating new file");
+		tmpFile = fopen("raj_tmp.txt","w");	
+	}
+	
+	char *buff = (char *) malloc(sizeof(char) * blockSize);
+	memset(buff,'.', blockSize);
+	start = threadInfo->startOffset;
+	end = threadInfo->endOffset;
+	printf("\n startOffset:%d, endOffset:%d ",start, end );
+
+	// For 1-byte latency
+	if(blockSize == 1000)
+	{	
+		//printf("Inside if");
+		//for(j=0; j<1000000; j++)
+		//{
+			for(i=start; i<=end/10; i++) // limit to 1 million ops or 1GB data
+			{
+				//Do random offset selection.
+				//randomOffset = rand()%(blocksPerThread) + (start);
+				//Read and Write memory at some random offset.
+				fseek(tmpFile,i*blockSize,SEEK_SET);
+				//lseek(file,randomOffset,SEEK_SET);
+				//lseek(file,i*blockSize, SEEK_SET);
+				//buff = 'a';	
+				//fseek(file,i*blockSize,SEEK_CUR);	
+				//write(tmpFile,buff,blockSize);
+				fwrite(buff,1,blockSize, tmpFile);
+			}	
+		//}
+		printf(" %ld", i);
+		free(buff);
+		fclose(tmpFile);
+		return;
+	}
+	
+	/*Used to set the starting value(seed), so time(NULL) will make use of 
+	 *computer's internal clock to control the choice of the seed.
+	 */
+	printf("%ld %ld", memorySize, blockSize);
+	//for(i=0; i<memorySize/blockSize; i++)
+	for(i=start; i<=end; i++)
+	{
+		//Do random offset selection.
+		//randomOffset = rand()%blocksPerThread + (start);
+		//Read and Write memory at some random offset.
+		fseek(tmpFile,i*blockSize,SEEK_SET);
+		//lseek(file,randomOffset,SEEK_SET);
+		//lseek(file,i*blockSize, SEEK_SET);
+		//buff = 'a';	
+		//fseek(file,i*blockSize,SEEK_CUR);	
+		
+		//write(tmpFile,buff,blockSize);
+		fwrite(buff,1,blockSize, tmpFile);
+		//printf(" %ld", i);
+	}
+	//printf("%s", buff);
+	//fseek(file, 0L, SEEK_END);
+	//long int sz = ftell(file);
+	//printf("\nFile size:, i:%ld ", i);
+	free(buff);
+	fclose(tmpFile);
+}
+
+void writeToFile()
+{
+	FILE *f;
+	char cwd[256];
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	      perror("\ngetcwd() error");
+	else
+	      printf("\ncurrent working directory is: %s\n", cwd);
+
+	//strcat(cwd,"/output");
+	//chdir(cwd);
+	chdir("/exports/home/rambani/cs553-pa1/disk/output/"); // for cluster
+	//chdir("/home/rambani/cs553-pa1/disk/output/");
+	getcwd(cwd, sizeof(cwd));
+	printf("\ncurrent working directory is: %s\n", cwd);
+    	f = fopen("disk-RR-1-1thread.out.dat", "a");
+	//printf("\n %s\n", outputFileName);
+	double MyDiskBenchEfficiency = MyDiskBenchValue / TheoreticalValue;
+	//printf("\n load:%s ", workLoad);
+	if(BlockSize == 1000)
+	{
+		MyDiskBenchValue = Latency;
+		TheoreticalValue = TheoreticalLatency;
+		MyDiskBenchEfficiency = MyDiskBenchValue / TheoreticalValue;
+	}
+	//printf(f, "%ld, %ld, %d, %f, %lf, %f\n", memorySize, concurrency, BlockSize, MyRAMBenchValue,TheoreticalValue, MyRAMBenchEfficiency);
+	fprintf(f,"%s\t\t%d\t\t%ld\t\t%lf\t\t%lf\t\t%lf\n", workLoad,concurrency, BlockSize, MyDiskBenchValue,TheoreticalValue, (MyDiskBenchEfficiency*100));
+	fclose(f);
+}
+

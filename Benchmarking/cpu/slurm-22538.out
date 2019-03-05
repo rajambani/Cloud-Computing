@@ -1,0 +1,2 @@
+/var/spool/slurmd/job22538/slurm_script: line 6: cd: /l_mklb_p_2018.1.009/benchmarks_2018/linux/mkl/benchmarks/linpack: No such file or directory
+/var/spool/slurmd/job22538/slurm_script: line 8: ./runme_xeon64: No such file or directory

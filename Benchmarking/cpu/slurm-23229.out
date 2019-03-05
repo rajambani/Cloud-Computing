@@ -1,0 +1,13 @@
+Here it is: cpu_QP_4thread.dat 
+QP
+4
+Q P 4
+ executing QP
+ executing QP
+ executing QP
+ executing QP
+ Size:333333333332 Threads:4 TotalTime:217.000000sec GigaOps:4.608295 
+
+current working directory is: /exports/home/rambani/cs553-pa1/cpu
+
+current working directory is: /exports/home/rambani/cs553-pa1/cpu/output

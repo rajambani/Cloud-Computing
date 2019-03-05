@@ -1,0 +1,3 @@
+[UDP, 1000, 2]1
+UDP Server started...
+slurmstepd: error: *** JOB 25128 ON redcompute-12 CANCELLED AT 2018-03-28T06:29:18 DUE TO TIME LIMIT ***

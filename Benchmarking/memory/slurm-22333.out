@@ -1,0 +1,9 @@
+Input file name: memory-RWS-10000000-4thread.dat
+ 4 10000000 
+4		10000000	RWS	4.400696	21.133021	0.440070
+
+current working directory is: /exports/home/rambani/cs553-pa1/memory
+
+current working directory is: /exports/home/rambani/cs553-pa1/memory/output
+
+ memory-RWS-10000000-4thread.out.dat

@@ -1,0 +1,11 @@
+Here it is: cpu_QP_2thread.dat 
+QP
+2
+Q P 2
+ executing QP
+ executing QP
+ Size:333333333332 Threads:2 TotalTime:232.000000sec GigaOps:4.310345 
+
+current working directory is: /exports/home/rambani/cs553-pa1/cpu
+
+current working directory is: /exports/home/rambani/cs553-pa1/cpu/output

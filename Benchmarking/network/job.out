@@ -1,0 +1,106 @@
+[TCP, 32000, 8]1
+Server Started...
+slurmstepd: error: *** JOB 22801 ON redcompute-11 CANCELLED AT 2018-03-27T06:49:00 DUE TO TIME LIMIT ***
+[TCP, 32000, 8]2
+java.net.UnknownHostException:  redcompute-3 
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:184)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at TCPClient.run(MyNETBenchTCP.java:280)
+	at java.lang.Thread.run(Thread.java:748)
+Exception in thread "Thread-0" java.lang.NullPointerException
+	at TCPClient.run(MyNETBenchTCP.java:354)
+	at java.lang.Thread.run(Thread.java:748)
+java.net.UnknownHostException:  redcompute-3 
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:184)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at TCPClient.run(MyNETBenchTCP.java:280)
+	at java.lang.Thread.run(Thread.java:748)
+java.net.UnknownHostException:  redcompute-3 
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:184)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at TCPClient.run(MyNETBenchTCP.java:280)
+	at java.lang.Thread.run(Thread.java:748)
+Exception in thread "Thread-4" java.lang.NullPointerException
+	at TCPClient.run(MyNETBenchTCP.java:354)
+	at java.lang.Thread.run(Thread.java:748)
+java.net.UnknownHostException:  redcompute-3 
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:184)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at TCPClient.run(MyNETBenchTCP.java:280)
+	at java.lang.Thread.run(Thread.java:748)
+Exception in thread "Thread-6" java.lang.NullPointerException
+	at TCPClient.run(MyNETBenchTCP.java:354)
+	at java.lang.Thread.run(Thread.java:748)
+java.net.UnknownHostException:  redcompute-3 
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:184)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at TCPClient.run(MyNETBenchTCP.java:280)
+	at java.lang.Thread.run(Thread.java:748)
+Exception in thread "Thread-3" java.lang.NullPointerException
+	at TCPClient.run(MyNETBenchTCP.java:354)
+	at java.lang.Thread.run(Thread.java:748)
+java.net.UnknownHostException:  redcompute-3 
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:184)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at TCPClient.run(MyNETBenchTCP.java:280)
+	at java.lang.Thread.run(Thread.java:748)
+Exception in thread "Thread-5" java.lang.NullPointerException
+	at TCPClient.run(MyNETBenchTCP.java:354)
+	at java.lang.Thread.run(Thread.java:748)
+java.net.UnknownHostException:  redcompute-3 
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:184)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at TCPClient.run(MyNETBenchTCP.java:280)
+	at java.lang.Thread.run(Thread.java:748)
+Exception in thread "Thread-7" java.lang.NullPointerException
+	at TCPClient.run(MyNETBenchTCP.java:354)
+	at java.lang.Thread.run(Thread.java:748)
+java.net.UnknownHostException:  redcompute-3 
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:184)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at TCPClient.run(MyNETBenchTCP.java:280)
+	at java.lang.Thread.run(Thread.java:748)
+Exception in thread "Thread-1" java.lang.NullPointerException
+	at TCPClient.run(MyNETBenchTCP.java:354)
+	at java.lang.Thread.run(Thread.java:748)
+Exception in thread "Thread-2" java.lang.NullPointerException
+	at TCPClient.run(MyNETBenchTCP.java:354)
+	at java.lang.Thread.run(Thread.java:748)
+Threads: 8
+Time taken: 0.0sec Throughput: InfinityMbPS
+Latency: 0.0 ms
+/exports/home/rambani/cs553-pa1/network
+slurmstepd: error: *** JOB 22809 ON redcompute-7 CANCELLED AT 2018-03-27T06:53:35 DUE TO TIME LIMIT ***
+slurmstepd: error: *** JOB 22813 ON redcompute-3 CANCELLED AT 2018-03-27T06:54:35 DUE TO TIME LIMIT ***
