@@ -1,1 +1,4 @@
-rambani A20396925
+- Calculation of CPU, Memory, Disk and Network benchmarks of Hyperion/Prometheus Cluster
+- Comparison of MY Benchmark with standard benchmarks and calculate Throughput and Efficiency.
+- Use of BASH and SLURM scripts to submit our jobs on cluster to be executed on multiple GPU nodes.
+- Tech Stack: C, pthreads, Linux, gcc, Bash scripts, SLURM scripts, SSH tunneling.
