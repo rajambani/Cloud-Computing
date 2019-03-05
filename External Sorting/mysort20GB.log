@@ -1,0 +1,14 @@
+File Size:20000000000 MemorySize: 250000000 Concurrency: 4
+Available Free Memory: 125930704
+Number of Chunks: 80 Chunk Size: 250000000
+Splitting and sorting input file /input/data-20GB.in into chunks
+Total time to sort and create chunks: 636.806
+Number of temp files created: 80
+Starting merging of sorted files...
+Files are merged
+Total time for external sort: 867.871 seconds
+-------------------------------Valsort Results-----------------------------------
+Records: 200000000
+Checksum: 5f5cc94518a4203
+Duplicate keys: 0
+SUCCESS - all records are in order
